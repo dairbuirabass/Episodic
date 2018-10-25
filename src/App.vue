@@ -1,14 +1,19 @@
 <template>
-    <div class="container text-light">
-        <app-home></app-home>
+    <div>
+        <app-header></app-header>
+        <div class="container text-light">
+            <router-view></router-view>
+        </div>
     </div>
 </template>
 
 <script>
-    import Home from './components/Home/Home.vue';
+    import Header from './components/Shared/Header.vue';
+
     export default {
         components: {
-            appHome: Home
+            // Shared
+            appHeader: Header,
         }
     }
 </script>
