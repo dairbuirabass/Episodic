@@ -10,8 +10,8 @@
                 <label for="seriesDesc">Synopsis</label>
                 <textarea v-model="synopsis" rows="4" class="form-control" id="seriesDesc" :placeholder="placeholders.synopsis"></textarea>
             </div>
-            <div class="genres">
-                <select class="custom-select" id="genres" aria-label="Example select with button addon">
+            <div class="form-group genres">
+                <select class="custom-select" id="genres">
                     <option selected>Choose...</option>
                     <option v-for="genre in genres">{{ genre }}</option>
                 </select>
@@ -23,12 +23,21 @@
                 </div>
                 <div class="form-group col-6">
                     <label for="seriesTitle">Finished in</label>
-                    <input v-model="ongoing" type="checkbox" aria-label="Ongoing?" selected>
-                    <input :disabled="ongoing" v-model="yearFinished" type="date" class="form-control" id="seriesTitle" :placeholder="placeholders.title">
+                    <input :disabled="ongoing" v-model="yearFinished" type="date" class="form-control mb-1" id="seriesTitle" :placeholder="placeholders.title">
+                    <label for="checkboxOngoing">Ongoing?</label>
+                    <input v-model="ongoing" id="checkboxOngoing" type="checkbox" selected>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="custom-file">
+                    <input type="file" @change="onFileSelected" class="custom-file-input" id="serialCoverImg" accept="image/*">
+                    <label class="custom-file-label" for="serialCoverImg">Upload Poster</label>
                 </div>
             </div>
             <button @click.prevent="addToApi" class="btn btn-primary float-right">Add Serial</button>
         </form>
+
+        <img :src="imageSrc" >
     </div>
 </template>
 
@@ -41,12 +50,14 @@
                 ongoing: true,
                 title: '',
                 synopsis: '',
-                genre: Array,
-                yearLaunched: Date,
-                yearFinished: Date,
+                genre: '',
+                image: null,
+                yearLaunched: '',
+                yearFinished: '',
+                selectedFile: null,
                 placeholders: {
                     title: 'Santa Barbara',
-                    description: 'In Santa Barbara, California, the fascinating and tumultuous life of the rich',
+                    synopsis: 'In Santa Barbara, California, the fascinating and tumultuous life of the rich',
 
                 },
                 genres: [
@@ -56,17 +67,31 @@
         },
         methods: {
             addToApi () {
-                const formData = {
+                const serialData = {
                     title: this.title,
                     synopsis: this.synopsis,
                     genre: this.genre,
+                    image: this.image,
                     yearLaunched: this.yearLaunched,
                     yearFinished: this.yearFinished,
                 }
-
-                axios.post('https://episodic-7721b.firebaseio.com/series.json', {formData})
-                  .then(res => console.log(res))
-                  .catch(err => console.log(err))
+                console.log(serialData)
+                this.$store.dispatch('addSerial', serialData)
+                this.$router.push('/series')
+            },
+            onFileSelected (event) {
+                const files = event.target.files;
+                let filename = files[0].name;
+                if (filename.lastIndexOf('.') <= 0) {
+                    return alert('Please use a valid file!');
+                }
+                const fileReader = new FileReader();
+                fileReader.addEventListener('load', () => {
+                    this.imageSrc = fileReader.result;
+                })
+                fileReader.readAsDataURL(files[0]);
+                this.image = files[0];
+                console.log(this.image);
             }
         }
     }

@@ -10,7 +10,7 @@
 
     export default {
         created () {
-            axios.get('https://episodic-7721b.firebaseio.com/series.json')
+            axios.get('/series.json')
               .then(res => {
                   console.log(res);
               })

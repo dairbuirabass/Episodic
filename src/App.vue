@@ -1,8 +1,10 @@
 <template>
     <div>
-        <app-header></app-header>
         <div class="container text-light">
-            <router-view></router-view>
+            <app-header></app-header>
+            <transition name="slide" mode="out-in">
+                <router-view></router-view>
+            </transition>
         </div>
     </div>
 </template>
