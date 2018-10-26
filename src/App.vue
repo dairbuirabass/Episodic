@@ -1,14 +1,21 @@
 <template>
-    <div class="container text-light">
-        <app-home></app-home>
+    <div>
+        <div class="container text-light">
+            <app-header></app-header>
+            <transition name="slide" mode="out-in">
+                <router-view></router-view>
+            </transition>
+        </div>
     </div>
 </template>
 
 <script>
-    import Home from './components/Home/Home.vue';
+    import Header from './components/Shared/Header.vue';
+
     export default {
         components: {
-            appHome: Home
+            // Shared
+            appHeader: Header,
         }
     }
 </script>
