@@ -5,12 +5,17 @@
             <router-link to="/series" tag="h6" class="d-inline-block ml-3">
                 <a class="display-6 text-light">See all</a>
             </router-link>
-            <div class="row text-dark">
-                 <div v-for="serial in series" class="card" style="width: 33%">
-                    <img class="card-img-top" :src="serial.imageUrl" alt="Card image cap">
+            <div class="card-deck text-dark" v-if="!loading">
+                 <div v-for="serial, i in series" class="card" style="">
+                    <img @click="redirectToSerial(serial.id)" class="card-img-top" :src="serial.imageUrl" :alt="serial.title">
                     <div class="card-body">
                         <h5 class="card-title">{{ serial.title }}</h5>
                         <p class="card-text">{{ serial.synopsis }}</p>
+                        <ul class="list-group">
+                            <li class="list-group-item"><b>Genre</b>: {{ (serial.genre) | capitalize }}</li>
+                            <li class="list-group-item">Launched: {{ dateToMoment(serial.yearLaunched) }}</li>
+                            <li class="list-group-item" v-if="serial.yearFinished">Finished: {{ dateToMoment(serial.yearFinished) }}</li>
+                        </ul>
                     </div>
                     <div class="card-body">
                         <a href="#" class="card-link">Serial Details</a>
@@ -27,11 +32,23 @@
 </template>
 
 <script>
+    import moment from 'moment'
     export default {
         computed: {
             series () {
                 return this.$store.getters.loadedSeries
+            },
+            loading () {
+                return this.$store.getters.loading
             }
+        },
+        methods: {
+            redirectToSerial (id) {
+                this.$router.push('/serial/' + id)
+            },
+            dateToMoment (date) {
+                return moment(date).fromNow();
+            },
         }
     }
 </script>
@@ -43,6 +60,10 @@
 
     a {
         text-decoration: none;
+    }
+
+    .card-img-top:hover {
+        cursor: pointer;
     }
 
 </style>

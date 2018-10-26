@@ -13,22 +13,22 @@ export const store = new Vuex.Store({
     },
     mutations: {
         setLoadedSeries (state, payload) {
-           state.loadedSeries = payload
+             state.loadedSeries = payload
         },
         addSerial (state, payload) {
             state.loadedSeries.push(payload)
         },
         setUser (state, payload) {
-           state.user = payload
+             state.user = payload
         },
         setLoading (state, payload) {
-           state.loading = payload
+             state.loading = payload
         },
         setError (state, payload) {
-           state.error = payload
+            state.error = payload
         },
         clearError (state) {
-           state.error = null
+            state.error = null
         }
     },
     actions: {
@@ -43,19 +43,16 @@ export const store = new Vuex.Store({
                       firebase.storage().ref('series/' + key).getDownloadURL()
                         .then(url => {
                           imgUrl = url
-                          console.log(imgUrl)
 
                           series.push({
                               id: key,
                               title: obj[key].title,
-                              synopsis: obj[key].description,
+                              synopsis: obj[key].synopsis,
                               genre: obj[key].genre,
                               imageUrl: imgUrl,
                               yearStarted: obj[key].yearStarted,
                               yearFinished: obj[key].yearFinished
                           })
-
-                          console.log(series)
                         })
                   }
                   commit('setLoadedSeries', series)
@@ -69,112 +66,111 @@ export const store = new Vuex.Store({
                 )
         },
         addSerial ({commit, getters}, payload) {
+            let yearFinished
+            if (payload.yearFinished === '') {
+                yearFinished = null
+            } else {
+                yearFinished = payload.yearFinished
+            }
             const serial = {
                 title: payload.title,
                 synopsis: payload.synopsis,
                 genre: payload.genre,
-                // yearStarted: payload.yearStarted,
-                // yearFinished: payload.yearFinished
+                yearLaunched: payload.yearLaunched,
+                yearFinished: yearFinished
             }
             let key
             firebase.database().ref('series').push(serial)
               .then((data) => {
-                key = data.key
-                return key
+                  key = data.key
+                  return key
               })
               .then(key => {
                   return firebase.storage().ref('series/' + key).put(payload.image)
               })
               .then(() => {
-                commit('addSerial', {
-                  ...serial,
-                  id: key
-                })
+                  commit('addSerial', {
+                      ...serial,
+                      id: key
+                  })
               })
               .catch((error) => {
-                console.log(error)
+                  console.log(error)
               })
             // Reach out to firebase and store it
         },
         signUserUp ({commit}, payload) {
-          commit('setLoading', true)
-          commit('clearError')
-          firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
-            .then(
-              user => {
-                commit('setLoading', false)
-                const newUser = {
-                  id: user.uid,
-                  registeredSeries: []
+            commit('setLoading', true)
+            commit('clearError')
+            firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
+              .then(
+                user => {
+                    commit('setLoading', false)
+                    const newUser = {
+                        id: user.uid,
+                        registeredSeries: []
+                    }
+                    commit('setUser', newUser)
                 }
-                commit('setUser', newUser)
-              }
-            )
-            .catch(
-              error => {
-                commit('setLoading', false)
-                commit('setError', error)
-                console.log(error)
-              }
-            )
+              )
+              .catch(
+                error => {
+                    commit('setLoading', false)
+                    commit('setError', error)
+                    console.log(error)
+                }
+              )
         },
         signUserIn ({commit}, payload) {
-          commit('setLoading', true)
-          commit('clearError')
-          firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-            .then(
-              user => {
-                commit('setLoading', false)
-                const newUser = {
-                  id: user.uid,
-                  registeredSeries: []
+            commit('setLoading', true)
+            commit('clearError')
+            firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
+              .then(
+                user => {
+                    commit('setLoading', false)
+                    const newUser = {
+                        id: user.uid,
+                        registeredSeries: []
+                    }
+                    commit('setUser', newUser)
                 }
-                commit('setUser', newUser)
-              }
-            )
-            .catch(
-              error => {
-                commit('setLoading', false)
-                commit('setError', error)
-                console.log(error)
-              }
-            )
+              )
+              .catch(
+                error => {
+                    commit('setLoading', false)
+                    commit('setError', error)
+                    console.log(error)
+                }
+              )
         },
         autoSignIn ({commit}, payload) {
-          commit('setUser', {id: payload.uid, registeredSeries: []})
+            commit('setUser', {id: payload.uid, registeredSeries: []})
         },
         logout ({commit}) {
-          firebase.auth().signOut()
-          commit('setUser', null)
+            firebase.auth().signOut()
+            commit('setUser', null)
         },
         clearError ({commit}) {
-          commit('clearError')
+            commit('clearError')
+        },
+        setError ({commit}, payload) {
+            commit('setError', payload)
         }
     },
     getters: {
-      loadedSeries (state) {
-        return state.loadedSeries.sort((serialA, serialB) => {
-          return serialA.date > serialB.date
-        })
-      },
-      featuredSeries (state, getters) {
-        return getters.loadedSeries.slice(0, 5)
-      },
-      loadedSerial (state) {
-        return (serialId) => {
-          return state.loadedSeries.find((serial) => {
-            return serial.id === serialId
-          })
+        loadedSeries (state) {
+            return state.loadedSeries.sort((serialA, serialB) => {
+                return serialA.date > serialB.date
+            })
+        },
+        user (state) {
+            return state.user
+        },
+        loading (state) {
+            return state.loading
+        },
+        error (state) {
+            return state.error
         }
-      },
-      user (state) {
-        return state.user
-      },
-      loading (state) {
-        return state.loading
-      },
-      error (state) {
-        return state.error
-      }
     }
 })

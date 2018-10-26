@@ -9,16 +9,9 @@
     import axios from 'axios';
 
     export default {
-        created () {
-            axios.get('/series.json')
-              .then(res => {
-                  console.log(res);
-              })
-              .err(err => console.log(err))
-        },
         data () {
             return {
-                title: 'Kakahi'
+                title: 'Serial'
             }
         }
     }

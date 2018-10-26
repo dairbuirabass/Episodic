@@ -8,7 +8,7 @@
                 <a class="nav-link text-light">Add Serial</a>
             </router-link>
             <router-link to="/series" tag="li" active-class="active" class="nav-item">
-                <a class="nav-link text-light">Serial</a>
+                <a class="nav-link text-light">Browse</a>
             </router-link>
 
             <div class="ml-auto">
@@ -26,12 +26,6 @@
                 </template>
             </div>
         </ul>
-
-        <template v-if="!user">
-            <div class="alert alert-success" role="alert">
-                Successfully logged out!
-            </div>
-        </template>
     </div>
 </template>
 
@@ -40,6 +34,7 @@
         methods: {
             onLogout () {
                 this.$store.dispatch('logout')
+                this.$router.go('/');
             }
         },
         computed: {
