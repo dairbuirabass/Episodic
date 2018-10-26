@@ -48,7 +48,6 @@
 </template>
 
 <script>
-    import validate from 'validate.js'
     export default {
         data () {
             return {

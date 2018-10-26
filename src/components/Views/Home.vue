@@ -6,7 +6,7 @@
                 <a class="display-6 text-light">See all</a>
             </router-link>
             <div class="card-deck text-dark" v-if="!loading">
-                 <div v-for="serial, i in series" class="card" style="">
+                 <div v-for="(serial, i) in series" class="card" style="">
                     <img @click="redirectToSerial(serial.id)" class="card-img-top" :src="serial.imageUrl" :alt="serial.title">
                     <div class="card-body">
                         <h5 class="card-title">{{ serial.title }}</h5>

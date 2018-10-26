@@ -1,25 +1,15 @@
 <template>
     <div>
-        <h2>{{ callMethod() }}</h2>
+        <h1>Serial</h1>
+        <ul class="list-group text-dark">
+            <li v-for="n in 10" class="list-group-item">Episode {{n}}</li>
+        </ul>
     </div>
 </template>
 
 <script>
     export default {
-        data () {
-            return {
-            }
-        },
-        computed: {
-            series () {
-                return this.$store.getters.loadedSerial
-            },
-        },
-        methods: {
-            callMethod () {
-                console.log(this.serial)
-            }
-        }
+
     }
 </script>
 
