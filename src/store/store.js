@@ -7,16 +7,22 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
     state: {
         loadedSeries: [],
+        activeSerial: [],
         user: null,
         loading: false,
         error: null
     },
     mutations: {
         setLoadedSeries (state, payload) {
-             state.loadedSeries = payload
+            state.loadedSeries = payload
         },
         addSerial (state, payload) {
             state.loadedSeries.push(payload)
+        },
+        setActiveSerial (state, payload) {
+            state.activeSerial = state.loadedSeries.filter(serial => {
+              return serial.id === payload
+            })
         },
         setUser (state, payload) {
              state.user = payload
@@ -164,8 +170,14 @@ export const store = new Vuex.Store({
     getters: {
         loadedSeries (state) {
             return state.loadedSeries.sort((serialA, serialB) => {
-                return serialA.date > serialB.date
+                let a = new Date(serialA.yearLaunched).getTime()
+                let b = new Date(serialB.yearLaunched).getTime()
+
+                return a > b
             })
+        },
+        loadSerial (state) {
+            return state.activeSerial
         },
         user (state) {
             return state.user

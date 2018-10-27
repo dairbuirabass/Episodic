@@ -13,7 +13,7 @@
                             <h5 class="card-title">{{ serial.title }}</h5>
                             <p class="card-text">{{ serial.synopsis | truncate(300, '...') }}</p>
                             <ul class="list-group">
-                                <li class="list-group-item"><b>Genre</b>: {{ (serial.genre) | capitalize }}</li>
+                                <li class="list-group-item"><b>Genre</b>: {{ (serial.genre) }}</li>
                                 <li class="list-group-item">Launched: {{ serial.yearLaunched }} ({{ dateToMoment(serial.yearLaunched) }})</li>
                                 <li class="list-group-item" v-if="serial.yearFinished">Finished: {{ serial.yearFinished }} ({{ dateToMoment(serial.yearFinished) }})</li>
                             </ul>
