@@ -5,21 +5,23 @@
             <router-link to="/series" tag="h6" class="d-inline-block ml-3">
                 <a class="display-6 text-light">See all</a>
             </router-link>
-            <div class="card-deck text-dark" v-if="!loading">
-                 <div v-for="(serial, i) in series" class="card" style="">
-                    <img @click="redirectToSerial(serial.id)" class="card-img-top" :src="serial.imageUrl" :alt="serial.title">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ serial.title }}</h5>
-                        <p class="card-text">{{ serial.synopsis }}</p>
-                        <ul class="list-group">
-                            <li class="list-group-item"><b>Genre</b>: {{ (serial.genre) | capitalize }}</li>
-                            <li class="list-group-item">Launched: {{ dateToMoment(serial.yearLaunched) }}</li>
-                            <li class="list-group-item" v-if="serial.yearFinished">Finished: {{ dateToMoment(serial.yearFinished) }}</li>
-                        </ul>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="card-link">Serial Details</a>
-                        <a href="#" class="card-link">Edit Serial Details</a>
+            <div class="card-columns text-dark" v-if="!loading">
+                <div v-for="(serial, i) in series">
+                    <div class="card p-0">
+                        <img @click="redirectToSerial(serial.id)" class="card-img-top" :src="serial.imageUrl" :alt="serial.title">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ serial.title }}</h5>
+                            <p class="card-text">{{ serial.synopsis | truncate(300, '...') }}</p>
+                            <ul class="list-group">
+                                <li class="list-group-item"><b>Genre</b>: {{ (serial.genre) | capitalize }}</li>
+                                <li class="list-group-item">Launched: {{ serial.yearLaunched }} ({{ dateToMoment(serial.yearLaunched) }})</li>
+                                <li class="list-group-item" v-if="serial.yearFinished">Finished: {{ serial.yearFinished }} ({{ dateToMoment(serial.yearFinished) }})</li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <a href="#" class="card-link">Serial Details</a>
+                            <a href="#" class="card-link">Edit Serial Details</a>
+                        </div>
                     </div>
                 </div>
             </div>

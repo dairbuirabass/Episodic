@@ -50,7 +50,7 @@ export const store = new Vuex.Store({
                               synopsis: obj[key].synopsis,
                               genre: obj[key].genre,
                               imageUrl: imgUrl,
-                              yearStarted: obj[key].yearStarted,
+                              yearLaunched: obj[key].yearLaunched,
                               yearFinished: obj[key].yearFinished
                           })
                         })
@@ -88,10 +88,14 @@ export const store = new Vuex.Store({
               .then(key => {
                   return firebase.storage().ref('series/' + key).put(payload.image)
               })
-              .then(() => {
+              .then((snapshot) => {
+                  return snapshot.ref.getDownloadURL()
+              })
+              .then((url) => {
                   commit('addSerial', {
                       ...serial,
-                      id: key
+                      id: key,
+                      imageUrl: url
                   })
               })
               .catch((error) => {

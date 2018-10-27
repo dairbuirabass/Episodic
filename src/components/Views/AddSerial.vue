@@ -43,7 +43,7 @@
             <button @click.prevent="send" class="btn btn-primary float-right">Add Serial</button>
         </form>
 
-        <img :src="imageSrc" >
+        <img :src="previewImg" >
     </div>
 </template>
 
@@ -53,6 +53,7 @@
             return {
                 ongoing: true,
                 errors: [],
+                previewImg: null,
                 inputs: {
                     title: '',
                     synopsis: '',
@@ -67,7 +68,7 @@
                     synopsis: 'In Santa Barbara, California, the fascinating and tumultuous life of the rich',
                 },
                 genres: [
-                    'Action', 'Anime', 'Cartoon', 'Drama', 'Ethnographic', 'Historical', 'Horror', 'Thriller'
+                    'Action', 'Anime', 'Cartoon', 'Drama', 'Ethnographic', 'Historical', 'Horror', 'Thriller', 'Sitcom'
                 ]
             }
         },
@@ -84,7 +85,7 @@
                     }
                     console.log(serialData)
                     this.$store.dispatch('addSerial', serialData)
-                    this.$router.push('/series')
+                    this.$router.push('/')
                 }
             },
             onFileSelected (event) {
@@ -94,6 +95,10 @@
                     return alert('Please use a valid file!');
                 }
                 const fileReader = new FileReader();
+                // Displays preview
+                fileReader.addEventListener('load', () => {
+                    this.previewImg = fileReader.result;
+                })
                 fileReader.readAsDataURL(files[0]);
                 this.inputs.image = files[0];
             },
