@@ -8,6 +8,8 @@ export const store = new Vuex.Store({
     state: {
         loadedSeries: [],
         activeSerial: [],
+        loadedEpisodes: [],
+        activeEpisodes: [],
         user: null,
         loading: false,
         error: null
@@ -16,12 +18,23 @@ export const store = new Vuex.Store({
         setLoadedSeries (state, payload) {
             state.loadedSeries = payload
         },
+        setLoadedEpisodes (state, payload) {
+            state.loadedEpisodes = payload
+        },
         addSerial (state, payload) {
             state.loadedSeries.push(payload)
+        },
+        addEpisode (state, payload) {
+            state.loadedEpisodes.push(payload)
         },
         setActiveSerial (state, payload) {
             state.activeSerial = state.loadedSeries.filter(serial => {
               return serial.id === payload
+            })
+        },
+        setActiveEpisodes (state, payload) {
+            state.activeEpisodes = state.loadedEpisodes.filter(episode => {
+              return episode.serialId === payload
             })
         },
         setUser (state, payload) {
@@ -107,7 +120,50 @@ export const store = new Vuex.Store({
               .catch((error) => {
                   console.log(error)
               })
-            // Reach out to firebase and store it
+        },
+        loadEpisodes ({commit}) {
+          commit('setLoading', true)
+          firebase.database().ref('episodes').once('value')
+            .then((data) => {
+                let episodes = []
+                const obj = data.val()
+                for (let key in obj) {
+                    episodes.push({
+                        id: key,
+                        serialId: obj[key].serialId,
+                        title: obj[key].title,
+                        synopsis: obj[key].synopsis,
+                        tags: obj[key].tags,
+                        dateOfRelease: obj[key].dateOfRelease
+                  })
+                }
+                commit('setLoadedEpisodes', episodes)
+                commit('setLoading', false)
+              })
+              .catch(
+                  (error) => {
+                      console.log(error)
+                      commit('setLoading', false)
+                  }
+              )
+        },
+        addEpisode({commit, getters}, payload) {
+            const episode = {
+                serialId: payload.serialId,
+                title: payload.title,
+                synopsis: payload.synopsis,
+                tags: payload.tags,
+                dateOfRelease: payload.dateOfRelease,
+            }
+            firebase.database().ref('episodes').push(episode)
+              .then(() => {
+                  commit('addEpisode', {
+                      ...episode,
+                  })
+              })
+              .catch((error) => {
+                  console.log(error)
+              })
         },
         signUserUp ({commit}, payload) {
             commit('setLoading', true)
@@ -176,8 +232,14 @@ export const store = new Vuex.Store({
                 return a > b
             })
         },
+        loadedEpisodes (state) {
+            return state.loadedEpisodes
+        },
         loadSerial (state) {
             return state.activeSerial
+        },
+        loadEpisodes (state) {
+            return state.activeEpisodes
         },
         user (state) {
             return state.user
