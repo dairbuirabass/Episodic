@@ -25,10 +25,26 @@
                     </div>
                 </div>
             </div>
+            <div v-else class="text-center">
+                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+            </div>
         </div>
 
         <div class="block">
             <h1>Random Episodes</h1>
+            <div class="card-columns text-dark" v-if="!loading">
+                <div v-for="(episode, i) in episodes">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ episode.title }}</h5>
+                            <p class="card-text">{{ episode.synopsis | truncate(300, '...') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="text-center">
+                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+            </div>
         </div>
     </div>
 </template>
@@ -39,6 +55,9 @@
         computed: {
             series () {
                 return this.$store.getters.loadedSeries
+            },
+            episodes () {
+                return this.$store.getters.loadedEpisodes
             },
             loading () {
                 return this.$store.getters.loading

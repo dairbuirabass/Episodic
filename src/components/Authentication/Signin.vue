@@ -1,10 +1,8 @@
 <template>
     <div>
         <h1>Sign in</h1>
-        <div v-if="error">
-            <div class="alert alert-danger" role="alert">
-                {{ error.message }}
-            </div>
+        <div v-if="error" class="alert alert-danger" role="alert">
+            {{ error.message }}
         </div>
         <form @submit.prevent="onSignin">
             <div class="form-group">

@@ -44,5 +44,6 @@ new Vue({
           }
         })
         this.$store.dispatch('loadSeries');
+        this.$store.dispatch('loadEpisodes');
     }
 })
