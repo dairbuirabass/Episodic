@@ -2,12 +2,15 @@
     <div>
         <h2>Add New Serial</h2>
         <form>
-            <p v-if="errors.length">
-                <b>Please correct the following error(s):</b>
-                <ul>
-                    <li v-for="error in errors">{{ error }}</li>
-                </ul>
-            </p>
+            <div v-if="errors.length" class="alert alert-danger" role="alert">
+                <p v-if="errors.length">
+                    <b>Please correct the following error(s):</b>
+                    <ul>
+                        <li v-for="error in errors">{{ error }}</li>
+                    </ul>
+                </p>
+            </div>
+
             <div class="form-group">
                 <label for="seriesTitle">Title</label>
                 <input v-model="inputs.title" type="text" class="form-control" id="seriesTitle" :placeholder="placeholders.title">
@@ -83,7 +86,6 @@
                         yearLaunched: this.inputs.yearLaunched.toString(),
                         yearFinished: this.inputs.yearFinished.toString(),
                     }
-                    console.log(serialData)
                     this.$store.dispatch('addSerial', serialData)
                     this.$router.push('/')
                 }
