@@ -19,8 +19,7 @@
                             </ul>
                         </div>
                         <div class="card-body">
-                            <a href="#" class="card-link">Serial Details</a>
-                            <a href="#" class="card-link">Edit Serial Details</a>
+                            <a @click="redirectToSerial(serial.id)" href="#" class="card-link">Serial Details</a>
                         </div>
                     </div>
                 </div>
